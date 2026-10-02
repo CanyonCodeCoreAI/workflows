@@ -1,0 +1,297 @@
+agents:
+  - name: MarketAnalyst
+    entrypoint: tradingagents/agents/analysts/market_analyst_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: SentimentAnalyst
+    entrypoint: tradingagents/agents/analysts/sentiment_analyst_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: NewsAnalyst
+    entrypoint: tradingagents/agents/analysts/news_analyst_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: FundamentalsAnalyst
+    entrypoint: tradingagents/agents/analysts/fundamentals_analyst_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: BullResearcher
+    entrypoint: tradingagents/agents/researchers/bull_researcher_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: BearResearcher
+    entrypoint: tradingagents/agents/researchers/bear_researcher_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: ResearchManager
+    entrypoint: tradingagents/agents/managers/research_manager_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: Trader
+    entrypoint: tradingagents/agents/trader/trader_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: AggressiveAnalyst
+    entrypoint: tradingagents/agents/risk_mgmt/aggressive_debator_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: ConservativeAnalyst
+    entrypoint: tradingagents/agents/risk_mgmt/conservative_debator_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: NeutralAnalyst
+    entrypoint: tradingagents/agents/risk_mgmt/neutral_debator_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: PortfolioManager
+    entrypoint: tradingagents/agents/managers/portfolio_manager_service.py
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+  - name: Workflow
+    type: workflow
+    workflow_file: tradingagents/graph/canyonos_workflow.py
+    api_port: 8080
+    requirements:
+      - langchain-core>=1.6.5
+      - langchain-anthropic>=1.7.4
+      - langchain-google-genai>=4.4.0
+      - langchain-openai>=1.6.6
+      - langgraph>=1.2.12
+      - langgraph-checkpoint-sqlite>=3.1.1
+      - pandas>=3.0.6
+      - python-dotenv>=1.0.0
+      - pytz>=2025.2
+      - requests>=2.32.4
+      - stockstats>=0.6.5
+      - typing-extensions>=4.14.0
+      - yfinance>=1.7.0
+
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    replicas: 1
+env_file: .env
+
+otel:
+  destinations:
+    - name: local
+      protocol: http
+      endpoint: http://host.docker.internal:3000
+      headers: {}

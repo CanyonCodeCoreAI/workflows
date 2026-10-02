@@ -1,0 +1,12 @@
+agent:
+  name: ReviewerAgent
+  functions:
+    - name: run
+      description: "Draft graph node 'reviewer'."
+      arguments:
+        - name: draft_state
+          type: dict
+        - name: headers
+          type: dict
+      returns:
+        type: dict

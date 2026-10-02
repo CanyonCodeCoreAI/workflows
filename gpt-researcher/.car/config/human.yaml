@@ -1,0 +1,12 @@
+agent:
+  name: HumanAgent
+  functions:
+    - name: review_plan
+      description: "Graph node 'human'."
+      arguments:
+        - name: research_state
+          type: dict
+        - name: headers
+          type: dict
+      returns:
+        type: dict

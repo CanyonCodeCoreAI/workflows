@@ -1,0 +1,10 @@
+agent:
+  name: BullResearcher
+  functions:
+    - name: run
+      description: Run the TradingAgents graph node on the run's state and return the node's state update.
+      arguments:
+        - name: state
+          type: dict
+      returns:
+        type: dict

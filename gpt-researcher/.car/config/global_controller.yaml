@@ -1,0 +1,141 @@
+# Requirements: requirements.txt + multi_agents/requirements.txt, as the project's Dockerfile installs them.
+# Every service imports gpt_researcher (directly or through multi_agents/__init__.py), so all share one list.
+agents:
+  - name: GPTResearcher
+    entrypoint: backend/server/canyonos_gpt_researcher.py
+    provider: local
+    replicas: 1
+    requirements: &agent_requirements
+      - "fastapi>=0.104.1"
+      - "uvicorn>=0.24.0.post1"
+      - "pydantic>=2.5.1"
+      - "python-dotenv>=1.0.0"
+      - "langchain>=1.0.0"
+      - "langchain-classic>=1.0.0"
+      - "langchain-community>=0.4.0"
+      - "langchain-core>=1.0.0"
+      - "langchain-ollama>=1.0.0"
+      - "langchain-openai>=1.0.0"
+      - "langchain-text-splitters>=1.0.0"
+      - "langgraph>=0.2.76"
+      - "openai>=1.3.3"
+      - "ollama>=0.4.8"
+      - "litellm>=1.71.0"
+      - "google-genai>=1.0.0"
+      - "tavily-python>=0.7.12"
+      - "ddgs>=9.0.0"
+      - "arxiv>=2.0.0"
+      - "beautifulsoup4>=4.12.2"
+      - "brotli>=1.2.0"
+      - "pymupdf>=1.23.6"
+      - "python-docx>=1.1.0"
+      - "python-pptx>=1.0.2"
+      - "unstructured>=0.13"
+      - "lxml>=4.9.2"
+      - "pandas>=2.0.0"
+      - "tiktoken>=0.7.0"
+      - "numpy>=2.0.0,<2.5.0"
+      - "aiofiles>=23.2.1"
+      - "httpx>=0.28.1"
+      - "websockets>=13.1"
+      - "requests>=2.31.0"
+      - "pyyaml>=6.0.1"
+      - "jinja2>=3.1.6"
+      - "loguru>=0.7.2"
+      - "colorama>=0.4.6"
+      - "md2pdf>=1.0.1"
+      - "mistune>=3.0.2"
+      - "htmldocx>=0.0.6"
+      - "mcp>=1.9.1,<2.0.0"
+      - "langchain-mcp-adapters>=0.1.0"
+      - "sqlalchemy>=2.0.28"
+      - "python-multipart>=0.0.6"
+      - "json-repair>=0.29.8"
+      - "json5>=0.9.25"
+      - "markdown>=3.5.1"
+      - "langgraph-cli"
+      - "weasyprint"
+
+  - name: ChiefEditorAgent
+    entrypoint: multi_agents/agents/canyonos_chief_editor.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: ResearchAgent
+    entrypoint: multi_agents/agents/canyonos_researcher.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: EditorAgent
+    entrypoint: multi_agents/agents/canyonos_editor.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: HumanAgent
+    entrypoint: multi_agents/agents/canyonos_human.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: WriterAgent
+    entrypoint: multi_agents/agents/canyonos_writer.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: FactCheckerAgent
+    entrypoint: multi_agents/agents/canyonos_fact_checker.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: VisualizerAgent
+    entrypoint: multi_agents/agents/canyonos_visualizer.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: PublisherAgent
+    entrypoint: multi_agents/agents/canyonos_publisher.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: ReviewerAgent
+    entrypoint: multi_agents/agents/canyonos_reviewer.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: ReviserAgent
+    entrypoint: multi_agents/agents/canyonos_reviser.py
+    provider: local
+    replicas: 1
+    requirements: *agent_requirements
+
+  - name: Workflow
+    type: workflow
+    workflow_file: canyonos_workflow.py
+    provider: local
+    replicas: 1
+    api_port: 8080
+    requirements: []
+
+poll_interval: 5
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+
+env_file: .env
+
+otel:
+  destinations:
+    - name: local
+      protocol: http
+      endpoint: http://host.docker.internal:3000
+      headers: {}

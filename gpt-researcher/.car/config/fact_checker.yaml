@@ -1,0 +1,12 @@
+agent:
+  name: FactCheckerAgent
+  functions:
+    - name: run
+      description: "Graph node 'fact_checker'."
+      arguments:
+        - name: research_state
+          type: dict
+        - name: headers
+          type: dict
+      returns:
+        type: dict

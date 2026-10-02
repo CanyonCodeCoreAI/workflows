@@ -1,0 +1,14 @@
+agent:
+  name: PublisherAgent
+  functions:
+    - name: run
+      description: "Graph node 'publisher'."
+      arguments:
+        - name: research_state
+          type: dict
+        - name: output_dir
+          type: str
+        - name: headers
+          type: dict
+      returns:
+        type: dict

@@ -1,0 +1,25 @@
+agent:
+  name: EditorAgent
+  functions:
+    - name: plan_research
+      description: "Graph node 'planner'."
+      arguments:
+        - name: research_state
+          type: dict
+        - name: tone
+          type: str
+        - name: headers
+          type: dict
+      returns:
+        type: dict
+    - name: research_tasks
+      description: "Log the parallel research and build one draft input per planned section."
+      arguments:
+        - name: research_state
+          type: dict
+        - name: tone
+          type: str
+        - name: headers
+          type: dict
+      returns:
+        type: list

@@ -1,0 +1,12 @@
+agent:
+  name: WriterAgent
+  functions:
+    - name: run
+      description: "Graph node 'writer'."
+      arguments:
+        - name: research_state
+          type: dict
+        - name: headers
+          type: dict
+      returns:
+        type: dict

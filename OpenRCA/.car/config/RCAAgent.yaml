@@ -1,0 +1,16 @@
+agent:
+  name: RCAAgent
+  functions:
+    - name: run
+      description: Run RCA-agent on one root cause analysis instruction against a dataset's telemetry.
+      arguments:
+        - name: instruction
+          type: str
+        - name: dataset
+          type: str
+        - name: max_step
+          type: int
+        - name: max_turn
+          type: int
+      returns:
+        type: dict

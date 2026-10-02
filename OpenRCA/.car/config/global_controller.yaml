@@ -1,0 +1,40 @@
+agents:
+  - name: RCAAgent
+    entrypoint: rca/baseline/rca_agent/rca_agent_adapter.py
+    provider: local
+    replicas: 1
+    resources:
+      memory: 16000
+      cpu: 2
+      gpu: 0
+    requirements:
+      - ipython==8.17.2
+      - loguru==0.7.2
+      - openai==1.54.3
+      - pandas==1.5.3
+      - pytz==2022.7
+      - tiktoken==0.7.0
+      # Transitive caps: pandas 1.5.3 needs numpy 1.x; openai 1.54.3 breaks on httpx 0.28.
+      - numpy<2
+      - httpx<0.28
+
+  - name: RCAWorkflow
+    type: workflow
+    workflow_file: rca/rca_workflow.py
+    provider: local
+    replicas: 1
+    api_port: 8080
+    requirements: []
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+
+env_file: .env
+
+otel:
+  destinations:
+    - name: local
+      protocol: http
+      endpoint: http://host.docker.internal:3000
+      headers: {}

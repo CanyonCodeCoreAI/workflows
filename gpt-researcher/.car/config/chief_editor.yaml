@@ -1,0 +1,14 @@
+agent:
+  name: ChiefEditorAgent
+  functions:
+    - name: prepare
+      description: "Load task.json for the query, create the run's output directory and log the start."
+      arguments:
+        - name: query
+          type: str
+        - name: tone
+          type: str
+        - name: headers
+          type: dict
+      returns:
+        type: dict
