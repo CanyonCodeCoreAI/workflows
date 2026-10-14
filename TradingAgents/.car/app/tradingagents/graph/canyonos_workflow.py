@@ -1,5 +1,7 @@
 """CanyonOS workflow: TradingAgentsGraph.propagate() with each graph node as a service.
 
+The endpoint serves ``Workflow.main`` at ``POST /main``.
+
 The edges are the ones GraphSetup.setup_graph() wires: the selected analysts at
 once, the bull/bear debate until ConditionalLogic ends it, the Research Manager,
 the Trader, the risk debate, then the Portfolio Manager. The run's setup and
@@ -12,7 +14,6 @@ The query is ``TICKER YYYY-MM-DD [asset_type]`` or a JSON object with
 import json
 import logging
 
-from deploy import deploy
 from langgraph.errors import GraphRecursionError
 from langgraph.graph.message import add_messages
 
@@ -124,16 +125,14 @@ def _run_graph(ticker: str, trade_date: str, asset_type: str, analysts: tuple) -
     return run.state
 
 
-def main(query: str):
-    request = _parse(query)
-    trade_date = _validate_trade_date(request["trade_date"])
-    with run_config(graph.config):
-        final_state = _run_graph(
-            request["ticker"], trade_date, request["asset_type"], request["analysts"]
-        )
-    result = {key: value for key, value in final_state.items() if key != "messages"}
-    result["signal"] = run_rating(final_state)
-    return result
-
-
-deploy(main, port=8080)
+class Workflow:
+    def main(self, query: str) -> dict:
+        request = _parse(query)
+        trade_date = _validate_trade_date(request["trade_date"])
+        with run_config(graph.config):
+            final_state = _run_graph(
+                request["ticker"], trade_date, request["asset_type"], request["analysts"]
+            )
+        result = {key: value for key, value in final_state.items() if key != "messages"}
+        result["signal"] = run_rating(final_state)
+        return result

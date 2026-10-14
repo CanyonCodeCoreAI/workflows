@@ -21,6 +21,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: SentimentAnalyst
     entrypoint: tradingagents/agents/analysts/sentiment_analyst_service.py
     requirements:
@@ -43,6 +51,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: NewsAnalyst
     entrypoint: tradingagents/agents/analysts/news_analyst_service.py
     requirements:
@@ -65,6 +81,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: FundamentalsAnalyst
     entrypoint: tradingagents/agents/analysts/fundamentals_analyst_service.py
     requirements:
@@ -87,6 +111,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: BullResearcher
     entrypoint: tradingagents/agents/researchers/bull_researcher_service.py
     requirements:
@@ -109,6 +141,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: BearResearcher
     entrypoint: tradingagents/agents/researchers/bear_researcher_service.py
     requirements:
@@ -131,6 +171,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: ResearchManager
     entrypoint: tradingagents/agents/managers/research_manager_service.py
     requirements:
@@ -153,6 +201,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: Trader
     entrypoint: tradingagents/agents/trader/trader_service.py
     requirements:
@@ -175,6 +231,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: AggressiveAnalyst
     entrypoint: tradingagents/agents/risk_mgmt/aggressive_debator_service.py
     requirements:
@@ -197,6 +261,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: ConservativeAnalyst
     entrypoint: tradingagents/agents/risk_mgmt/conservative_debator_service.py
     requirements:
@@ -219,6 +291,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: NeutralAnalyst
     entrypoint: tradingagents/agents/risk_mgmt/neutral_debator_service.py
     requirements:
@@ -241,6 +321,14 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: PortfolioManager
     entrypoint: tradingagents/agents/managers/portfolio_manager_service.py
     requirements:
@@ -263,10 +351,16 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: run
+        arguments:
+          - name: state
+            type: dict
+        returns:
+          type: dict
+
   - name: Workflow
-    type: workflow
-    workflow_file: tradingagents/graph/canyonos_workflow.py
-    api_port: 8080
+    entrypoint: tradingagents/graph/canyonos_workflow.py
     requirements:
       - langchain-core>=1.6.5
       - langchain-anthropic>=1.7.4
@@ -287,6 +381,19 @@ agents:
       memory: 512
       gpu: 0
     replicas: 1
+    functions:
+      - name: main
+        arguments:
+          - name: query
+            type: str
+        returns:
+          type: dict
+
+endpoint:
+  api_port: 8080
+  agent: Workflow
+  method: main
+
 env_file: .env
 
 otel:
