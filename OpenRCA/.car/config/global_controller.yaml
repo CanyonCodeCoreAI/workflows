@@ -17,18 +17,41 @@ agents:
       # Transitive caps: pandas 1.5.3 needs numpy 1.x; openai 1.54.3 breaks on httpx 0.28.
       - numpy<2
       - httpx<0.28
+    functions:
+      - name: run
+        arguments:
+          - name: instruction
+            type: str
+          - name: dataset
+            type: str
+          - name: max_step
+            type: int
+          - name: max_turn
+            type: int
+        returns:
+          type: dict
 
   - name: RCAWorkflow
-    type: workflow
-    workflow_file: rca/rca_workflow.py
+    entrypoint: rca/rca_workflow.py
     provider: local
     replicas: 1
-    api_port: 8080
     requirements: []
     resources:
       cpu: 1
       memory: 512
       gpu: 0
+    functions:
+      - name: main
+        arguments:
+          - name: query
+            type: str
+        returns:
+          type: dict
+
+endpoint:
+  api_port: 8080
+  agent: RCAWorkflow
+  method: main
 
 env_file: .env
 

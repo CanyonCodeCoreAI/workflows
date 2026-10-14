@@ -55,74 +55,231 @@ agents:
       - "markdown>=3.5.1"
       - "langgraph-cli"
       - "weasyprint"
+    functions:
+      - name: run
+        arguments:
+          - name: task
+            type: str
+          - name: report_type
+            type: str
+          - name: report_source
+            type: str
+          - name: tone
+            type: str
+          - name: source_urls
+            type: list
+          - name: document_urls
+            type: list
+          - name: query_domains
+            type: list
+          - name: headers
+            type: dict
+          - name: mcp_enabled
+            type: bool
+          - name: mcp_strategy
+            type: str
+          - name: mcp_configs
+            type: list
+          - name: max_search_results
+            type: 'int | None'
+        returns:
+          type: dict
 
   - name: ChiefEditorAgent
     entrypoint: multi_agents/agents/canyonos_chief_editor.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: prepare
+        arguments:
+          - name: query
+            type: str
+          - name: tone
+            type: str
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: ResearchAgent
     entrypoint: multi_agents/agents/canyonos_researcher.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run_initial_research
+        arguments:
+          - name: research_state
+            type: dict
+          - name: tone
+            type: str
+          - name: headers
+            type: dict
+        returns:
+          type: dict
+      - name: run_depth_research
+        arguments:
+          - name: draft_state
+            type: dict
+          - name: tone
+            type: str
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: EditorAgent
     entrypoint: multi_agents/agents/canyonos_editor.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: plan_research
+        arguments:
+          - name: research_state
+            type: dict
+          - name: tone
+            type: str
+          - name: headers
+            type: dict
+        returns:
+          type: dict
+      - name: research_tasks
+        arguments:
+          - name: research_state
+            type: dict
+          - name: tone
+            type: str
+          - name: headers
+            type: dict
+        returns:
+          type: list
 
   - name: HumanAgent
     entrypoint: multi_agents/agents/canyonos_human.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: review_plan
+        arguments:
+          - name: research_state
+            type: dict
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: WriterAgent
     entrypoint: multi_agents/agents/canyonos_writer.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run
+        arguments:
+          - name: research_state
+            type: dict
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: FactCheckerAgent
     entrypoint: multi_agents/agents/canyonos_fact_checker.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run
+        arguments:
+          - name: research_state
+            type: dict
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: VisualizerAgent
     entrypoint: multi_agents/agents/canyonos_visualizer.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run
+        arguments:
+          - name: research_state
+            type: dict
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: PublisherAgent
     entrypoint: multi_agents/agents/canyonos_publisher.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run
+        arguments:
+          - name: research_state
+            type: dict
+          - name: output_dir
+            type: str
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: ReviewerAgent
     entrypoint: multi_agents/agents/canyonos_reviewer.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run
+        arguments:
+          - name: draft_state
+            type: dict
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: ReviserAgent
     entrypoint: multi_agents/agents/canyonos_reviser.py
     provider: local
     replicas: 1
     requirements: *agent_requirements
+    functions:
+      - name: run
+        arguments:
+          - name: draft_state
+            type: dict
+          - name: headers
+            type: dict
+        returns:
+          type: dict
 
   - name: Workflow
-    type: workflow
-    workflow_file: canyonos_workflow.py
+    entrypoint: canyonos_workflow.py
     provider: local
     replicas: 1
-    api_port: 8080
     requirements: []
+    functions:
+      - name: main
+        arguments:
+          - name: query
+            type: str
+        returns:
+          type: dict
+
+endpoint:
+  api_port: 8080
+  agent: Workflow
+  method: main
 
 poll_interval: 5
 
