@@ -1,4 +1,4 @@
-"""CanyonOS workflow for GPT Researcher.
+"""CanyonOS workflow for GPT Researcher, served by the endpoint at ``POST /main``.
 
 Serves the report generation behind the backend server's ``/report/`` and
 ``/ws`` endpoints. ``query`` is either the research task as plain text or a
@@ -16,7 +16,6 @@ import importlib.util
 import json
 import os
 
-from deploy import deploy
 from canyonos_gpt_researcher import GPTResearcher
 from canyonos_chief_editor import ChiefEditorAgent
 from canyonos_researcher import ResearchAgent
@@ -163,11 +162,9 @@ def _multi_agents(request):
     return {"report": state.get("report", "")}
 
 
-def main(query: str):
-    request = _parse_request(query)
-    if request["report_type"] == "multi_agents":
-        return _multi_agents(request)
-    return json.loads(gpt_researcher.run(**request).value())
-
-
-deploy(main, port=8080)
+class Workflow:
+    def main(self, query: str) -> dict:
+        request = _parse_request(query)
+        if request["report_type"] == "multi_agents":
+            return _multi_agents(request)
+        return json.loads(gpt_researcher.run(**request).value())
