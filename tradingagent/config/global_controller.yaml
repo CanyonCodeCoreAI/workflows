@@ -1,0 +1,238 @@
+# SPDX-FileCopyrightText: 2026 Canyon Code, Inc.
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Global Controller Configuration — trading desk
+# Lists every agent CanyonOS manages, and the one the endpoint serves.
+#
+# Two fan-outs shape this pipeline: four analysts on one snapshot, then three
+# risk seats on one plan. Replica counts below are set so each fan-out can
+# actually land in parallel rather than queueing behind itself -- that is the
+# knob worth playing with when reading this example.
+
+agents:
+  # Stage 0: the only agent that reaches outside the cluster. Network-bound,
+  # one call per request, and every analyst reads what it returns.
+  - name: MarketDataAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/market_data_agent.py
+    requirements: [yfinance]
+    functions:
+      - name: snapshot
+        arguments:
+          - name: ticker
+            type: str
+          - name: lookback_days
+            type: int
+          - name: as_of
+            type: str
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # Stage 1: the widest fan-out -- four lenses, dispatched at once. One
+  # replica here, so the four queue; raise it to 4 and they land together.
+  # That one number is the clearest demonstration in the repo of what the
+  # scheduler is for.
+  - name: AnalystAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/analyst_agent.py
+    requirements: [openai]
+    functions:
+      - name: analyze
+        arguments:
+          - name: lens
+            type: str
+          - name: snapshot
+            type: dict
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # Stage 2: bull and bear, both dispatched per round. Raise to 2 for a
+  # round at a time; the rounds themselves stay sequential by design.
+  - name: ResearcherAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/researcher_agent.py
+    requirements: [openai]
+    functions:
+      - name: argue
+        arguments:
+          - name: stance
+            type: str
+          - name: reports
+            type: list
+          - name: history
+            type: list
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # Stage 3: judges the debate onto a five-point rating before anyone acts on
+  # it. A barrier -- nothing downstream starts until the desk has a view.
+  - name: ResearchManagerAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/research_manager_agent.py
+    requirements: [openai]
+    functions:
+      - name: judge
+        arguments:
+          - name: ticker
+            type: str
+          - name: reports
+            type: list
+          - name: debate
+            type: list
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # Stage 4: one proposal, on the critical path between the two fan-outs.
+  - name: TraderAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/trader_agent.py
+    requirements: [openai]
+    functions:
+      - name: propose
+        arguments:
+          - name: ticker
+            type: str
+          - name: reports
+            type: list
+          - name: debate
+            type: list
+          - name: research
+            type: dict
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # Stage 4: the second fan-out -- three seats on the same plan, at once.
+  - name: RiskAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/risk_agent.py
+    requirements: [openai]
+    functions:
+      - name: review
+        arguments:
+          - name: stance
+            type: str
+          - name: plan
+            type: dict
+          - name: snapshot
+            type: dict
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # Stage 5: the last word. One call, after the final barrier.
+  - name: PortfolioManagerAgent
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/portfolio_manager_agent.py
+    requirements: [openai]
+    functions:
+      - name: decide
+        arguments:
+          - name: ticker
+            type: str
+          - name: plan
+            type: dict
+          - name: verdicts
+            type: list
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+
+  # The agent the endpoint serves. Holds the orchestration -- both fan-outs,
+  # both barriers and the debate loop -- and calls every agent above.
+  - name: Workflow
+    redis_port: 6379
+    replicas: 1
+    resources:
+      cpu: 1
+      memory: 512
+      gpu: 0
+    entrypoint: agents/workflow.py
+    functions:
+      - name: main
+        arguments:
+          - name: query
+            type: str
+        returns:
+          type: dict
+    provider: local
+    instance_type: t3.micro
+    # How many bull/bear rounds to run. Two model calls per round, and nothing
+    # in the argument itself makes it stop, so the cap sits here where it is
+    # visible rather than buried in the agent. Clamped to 1-4 by the workflow.
+    env:
+      MAX_DEBATE_ROUNDS: '2'
+
+endpoint:
+  api_port: 8085 # REST API port
+  agent: Workflow
+  method: main
+
+dashboard_port: 8081 # Local dashboard's preferred port
+
+otel:
+  # The dashboard api's own OTLP ingest. Base url only -- the exporter appends
+  # the per-signal path (/v1/traces, /v1/metrics, /v1/logs) to whatever is set.
+  destinations:
+    - name: local
+      protocol: http
+      endpoint: http://host.docker.internal:3000
+      headers: {}
+
+# OPENAI_API_KEY, and nothing else -- see .env.example.
+env_file: .env
+
+# Polling interval in seconds
+poll_interval: 4
+logs: true
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0

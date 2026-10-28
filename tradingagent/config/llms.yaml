@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2026 Canyon Code, Inc.
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Model access — trading desk
+# Keyed by a label for each model. An agent missing from a model's agents list
+# is refused; a model not listed here is open to every agent. A cap is the most
+# one call may cost in US dollars, checked against its worst case before
+# sending.
+#
+# Six agents reason with a model here; MarketDataAgent is absent because it
+# only fetches figures and never calls one. Listing agents individually is
+# what makes that difference enforceable rather than merely true today.
+#
+# The per-agent caps matter more here than in most workflows. One request is
+# at least 14 model calls:
+#
+#   4 analysts + 4 debate turns (2 rounds x 2 sides) + 1 research manager
+#   + 1 trader + 3 risk seats + 1 portfolio manager
+#
+# and every extra debate round adds two more. A cap is per call, so it bounds
+# the worst single call rather than the request as a whole.
+#
+# max_tokens here is the gateway's own assumption when pricing a call that
+# does not set a limit, which is every call this workflow makes -- the
+# agents send no cap, so the model answers at whatever length it needs.
+# Generous on purpose: on a reasoning model the real spend includes the
+# thinking, and a low assumption would under-price every call against the
+# caps below.
+
+# Both models this example is expected to meet. A model NOT listed here is
+# open to every agent with no cap at all, so setting OPENAI_MODEL to something
+# missing from this file silently turns the caps off rather than refusing the
+# call -- which is the opposite of what a cap is for.
+
+gpt-4o-mini:
+  model_id: gpt-4o-mini
+  max_tokens: 1600
+  agents:
+    AnalystAgent: 0.02
+    ResearcherAgent: 0.02
+    ResearchManagerAgent: 0.02
+    TraderAgent: 0.02
+    RiskAgent: 0.02
+    PortfolioManagerAgent: 0.02
+
+gpt-6.1-sol:
+  model_id: gpt-6.1-sol
+  max_tokens: 1600
+  agents:
+    AnalystAgent: 0.05
+    ResearcherAgent: 0.05
+    ResearchManagerAgent: 0.05
+    TraderAgent: 0.05
+    RiskAgent: 0.05
+    PortfolioManagerAgent: 0.05

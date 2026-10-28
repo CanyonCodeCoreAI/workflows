@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2026 Canyon Code, Inc.
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Policy-Based Routing Rules — trading desk
+# Each rule defines a match condition (key-value pairs checked against the
+# request context) and an access list of allowed services.
+# Rules are evaluated most-specific-first (most matching keys wins).
+# An empty match ({}) acts as a default fallback.
+
+rules:
+  # Admins can reach every agent directly.
+  - match:
+      origin: admin
+    access: all
+
+  # Default fallback: the workflow and every desk it convenes.
+  - match: {}
+    access:
+      - Workflow
+      - MarketDataAgent
+      - AnalystAgent
+      - ResearcherAgent
+      - ResearchManagerAgent
+      - TraderAgent
+      - RiskAgent
+      - PortfolioManagerAgent
