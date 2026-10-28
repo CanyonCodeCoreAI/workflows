@@ -3,7 +3,6 @@
 agents:
   - name: GPTResearcher
     entrypoint: backend/server/canyonos_gpt_researcher.py
-    provider: local
     replicas: 1
     requirements: &agent_requirements
       - "fastapi>=0.104.1"
@@ -87,7 +86,6 @@ agents:
 
   - name: ChiefEditorAgent
     entrypoint: multi_agents/agents/canyonos_chief_editor.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -104,7 +102,6 @@ agents:
 
   - name: ResearchAgent
     entrypoint: multi_agents/agents/canyonos_researcher.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -131,7 +128,6 @@ agents:
 
   - name: EditorAgent
     entrypoint: multi_agents/agents/canyonos_editor.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -158,7 +154,6 @@ agents:
 
   - name: HumanAgent
     entrypoint: multi_agents/agents/canyonos_human.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -173,7 +168,6 @@ agents:
 
   - name: WriterAgent
     entrypoint: multi_agents/agents/canyonos_writer.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -188,7 +182,6 @@ agents:
 
   - name: FactCheckerAgent
     entrypoint: multi_agents/agents/canyonos_fact_checker.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -203,7 +196,6 @@ agents:
 
   - name: VisualizerAgent
     entrypoint: multi_agents/agents/canyonos_visualizer.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -218,7 +210,6 @@ agents:
 
   - name: PublisherAgent
     entrypoint: multi_agents/agents/canyonos_publisher.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -235,7 +226,6 @@ agents:
 
   - name: ReviewerAgent
     entrypoint: multi_agents/agents/canyonos_reviewer.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -250,7 +240,6 @@ agents:
 
   - name: ReviserAgent
     entrypoint: multi_agents/agents/canyonos_reviser.py
-    provider: local
     replicas: 1
     requirements: *agent_requirements
     functions:
@@ -265,7 +254,6 @@ agents:
 
   - name: Workflow
     entrypoint: canyonos_workflow.py
-    provider: local
     replicas: 1
     requirements: []
     functions:
@@ -288,7 +276,6 @@ redis:
   port: 6379
   db: 0
 
-env_file: .env
 
 otel:
   destinations:
