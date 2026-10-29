@@ -186,11 +186,8 @@ agents:
       MAX_DEBATE_ROUNDS: '2'
 
 endpoint:
-  api_port: 8085 # REST API port
   agent: Workflow
   method: main
-
-dashboard_port: 8081 # Local dashboard's preferred port
 
 otel:
   # The dashboard api's own OTLP ingest. Base url only -- the exporter appends
@@ -206,7 +203,3 @@ otel:
 poll_interval: 4
 logs: true
 
-redis:
-  host: localhost
-  port: 6379
-  db: 0
