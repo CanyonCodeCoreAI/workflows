@@ -1,7 +1,6 @@
 agents:
   - name: RCAAgent
     entrypoint: rca/baseline/rca_agent/rca_agent_adapter.py
-    provider: local
     replicas: 1
     resources:
       memory: 16000
@@ -33,7 +32,6 @@ agents:
 
   - name: RCAWorkflow
     entrypoint: rca/rca_workflow.py
-    provider: local
     replicas: 1
     requirements: []
     resources:
@@ -53,7 +51,6 @@ endpoint:
   agent: RCAWorkflow
   method: main
 
-env_file: .env
 
 otel:
   destinations:

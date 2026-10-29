@@ -394,7 +394,6 @@ endpoint:
   agent: Workflow
   method: main
 
-env_file: .env
 
 otel:
   destinations:
