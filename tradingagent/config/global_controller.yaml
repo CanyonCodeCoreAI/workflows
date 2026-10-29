@@ -13,7 +13,6 @@ agents:
   # Stage 0: the only agent that reaches outside the cluster. Network-bound,
   # one call per request, and every analyst reads what it returns.
   - name: MarketDataAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -32,15 +31,12 @@ agents:
             type: str
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # Stage 1: the widest fan-out -- four lenses, dispatched at once. One
   # replica here, so the four queue; raise it to 4 and they land together.
   # That one number is the clearest demonstration in the repo of what the
   # scheduler is for.
   - name: AnalystAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -57,13 +53,10 @@ agents:
             type: dict
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # Stage 2: bull and bear, both dispatched per round. Raise to 2 for a
   # round at a time; the rounds themselves stay sequential by design.
   - name: ResearcherAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -82,13 +75,10 @@ agents:
             type: list
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # Stage 3: judges the debate onto a five-point rating before anyone acts on
   # it. A barrier -- nothing downstream starts until the desk has a view.
   - name: ResearchManagerAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -107,12 +97,9 @@ agents:
             type: list
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # Stage 4: one proposal, on the critical path between the two fan-outs.
   - name: TraderAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -133,12 +120,9 @@ agents:
             type: dict
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # Stage 4: the second fan-out -- three seats on the same plan, at once.
   - name: RiskAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -157,12 +141,9 @@ agents:
             type: dict
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # Stage 5: the last word. One call, after the final barrier.
   - name: PortfolioManagerAgent
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -181,13 +162,10 @@ agents:
             type: list
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
 
   # The agent the endpoint serves. Holds the orchestration -- both fan-outs,
   # both barriers and the debate loop -- and calls every agent above.
   - name: Workflow
-    redis_port: 6379
     replicas: 1
     resources:
       cpu: 1
@@ -201,8 +179,6 @@ agents:
             type: str
         returns:
           type: dict
-    provider: local
-    instance_type: t3.micro
     # How many bull/bear rounds to run. Two model calls per round, and nothing
     # in the argument itself makes it stop, so the cap sits here where it is
     # visible rather than buried in the agent. Clamped to 1-4 by the workflow.
@@ -225,8 +201,6 @@ otel:
       endpoint: http://host.docker.internal:3000
       headers: {}
 
-# OPENAI_API_KEY, and nothing else -- see .env.example.
-env_file: .env
 
 # Polling interval in seconds
 poll_interval: 4
